@@ -5,19 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Car_Pool.Models.Bookings
+namespace Car_Pool.Models.Offers
 {
-    public class Bookings
+    public class AddOffer
     {
         public int UserId { get; set; }
         [Key]
-        public int BookingId { get; set; }
         public int OfferId { get; set; }
         public string? Source { get; set; }
         public string? Destination { get; set; }
         public DateTime RideDate { get; set; }
         public string? RideTime { get; set; }
-        public int Price_Paid { get; set; }
-        public bool IsCompleted { get; set; }
+        public int Price_Offerred { get; set; }
+        public int Seats_Available { get; set; }
     }
 }

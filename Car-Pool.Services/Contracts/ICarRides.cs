@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Car_Pool.Models.Offer_Rides;
-using Car_Pool.Models.Available_Rides;
+using Car_Pool.Models.Offers;
 
 namespace Car_Pool.Services.Contracts
 {

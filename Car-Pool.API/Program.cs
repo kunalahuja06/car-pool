@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
 builder.Services.AddDbContext<DBContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<ICarRides, CarRides>();
-//builder.Services.AddScoped<IUserRides, UserRides>();
+builder.Services.AddScoped<IUserRides, UserRides>();
 
 var app = builder.Build();
 

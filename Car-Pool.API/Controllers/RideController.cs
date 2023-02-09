@@ -1,6 +1,5 @@
-﻿using Car_Pool.Models;
-using Car_Pool.Models.Bookings;
-using Car_Pool.Models.Offer_Rides;
+﻿using Car_Pool.Models.Bookings;
+using Car_Pool.Models.Offers;
 using Car_Pool.Services.Contracts;
 using Microsoft.AspNetCore.Mvc;
 

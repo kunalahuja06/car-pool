@@ -1,8 +1,7 @@
 ﻿
 using Car_Pool.Models;
-using Car_Pool.Models.Available_Rides;
 using Car_Pool.Models.Bookings;
-using Car_Pool.Models.Offer_Rides;
+using Car_Pool.Models.Offers;
 using Car_Pool.Services.Contracts;
 using Car_Pool.Services.Data;
 using System;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Car_Pool.Models.User;
 
 namespace Car_Pool.Services
 {
@@ -22,10 +22,16 @@ namespace Car_Pool.Services
         }
         public List<AvailableRides> GetAvailableRides(RideRequest rideRequest)
         {
-            IQueryable<AvailableRides> availableRides = _context.AvailableRides.Where(x => x.Source == rideRequest.Source && x.Destination == rideRequest.Destination && x.RideDate == rideRequest.RideDate && x.RideTime == rideRequest.RideTime);
-            IEnumerable<AvailableRides> availableRidesList = availableRides.Where(x => x.Seats_Available > 0 && !x.Booking_Status).ToList();
-            return availableRidesList.ToList();
-
+            IQueryable<AvailableRides> availableRides = _context.AvailableRides
+                .Where(x =>
+                    (x.Source == rideRequest.Source && _context.Stops.Any(y => y.OfferId == x.OfferId && y.StopName == rideRequest.Source)) &&
+                    (x.Destination == rideRequest.Destination && _context.Stops.Any(y => y.OfferId == x.OfferId && y.StopName == rideRequest.Destination)) &&
+                    x.RideDate == rideRequest.RideDate && 
+                    x.RideTime == rideRequest.RideTime && 
+                    x.Seats_Available > 0 && 
+                    !x.Booking_Status);
+            
+            return availableRides.ToList();
         }
         public BookingStatus BookRide(int OfferId)
         {
@@ -49,13 +55,11 @@ namespace Car_Pool.Services
                     Price_Paid = availableRides.Price_Offerred
                 });
                 _context.SaveChanges();
+                var user = _context.Users.Where(x => x.UserId == availableRides.UserId).FirstOrDefault();
                 bookingStatus.Status = true;
                 bookingStatus.BookingDetails = new BookingDetails
                 {
-                    BookingId = availableRides.OfferId,
-                    UserId = availableRides.UserId,
-                    OfferId = availableRides.OfferId,
-                    RiderName = availableRides.RiderName,
+                    RiderName = user.UserName,
                     Source = availableRides.Source,
                     Destination = availableRides.Destination,
                     RideDate = availableRides.RideDate,
@@ -86,10 +90,11 @@ namespace Car_Pool.Services
         }
         public bool AddOffer(AddOffer offer)
         {
+            var user = _context.Users.Where(x => x.UserId == offer.UserId).FirstOrDefault();
             _context.AvailableRides.Add(new AvailableRides
             {
                 UserId = offer.UserId,
-                RiderName = offer.RiderName,
+                RiderName = user.UserName,
                 Source = offer.Source,
                 Destination = offer.Destination,
                 RideDate = offer.RideDate,
